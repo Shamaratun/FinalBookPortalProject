@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,31 +29,61 @@ public class AdminController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable Long id) {
-        Book book = bookService.getBookById(id); // Assume this fetches the book
+        Book book = bookService.getBookById(id);
         return ResponseEntity.ok(book);
+    }
+
+    @GetMapping("/books/withAuthor")
+    public ResponseEntity<?> getBooksWithAuthorName() {
+        List<Book> books = authorService.getAllBooks();
+
+        List<BookWithAuthorsDto> bookWithAuthorsDtoList = new ArrayList<>();
+
+        for (Book book : books) {
+            StringBuilder authorNamesBuilder = new StringBuilder();
+
+            for (Author author : book.getBookAuthors()) {
+                if (!authorNamesBuilder.isEmpty()) {
+                    authorNamesBuilder.append(", ");
+                }
+                authorNamesBuilder.append(author.getAuthorName());
+            }
+
+            String authorNames = authorNamesBuilder.toString();
+
+            BookWithAuthorsDto dto = new BookWithAuthorsDto(
+                    book.getId(),
+                    book.getBookName(),
+                    book.getBookIsbnNumber(),
+                    book.getBookPrice(),
+                    book.getBookRating(),
+                    book.getBookQuantity(),
+                    book.getBookCategory(),
+                    authorNames
+            );
+
+            bookWithAuthorsDtoList.add(dto);
+        }
+
+        return ResponseEntity.ok(bookWithAuthorsDtoList);
     }
 
     @PostMapping("/add/book")
     public ResponseEntity<?> addNewBook(@RequestBody AddBookDto addBookDto) {
         Book book = bookService.addNewBook(addBookDto);
-        return new ResponseEntity<>(book, HttpStatus.CREATED);
+        BookResponseDto bookResponseDto = book.toBookResponseDto();
+        return new ResponseEntity<>(bookResponseDto, HttpStatus.CREATED);
     }
-//	@PostMapping("/add/book")
-//	public ResponseEntity<?> addNewBook(@RequestBody AddBookDto addBookDto) {
-//		Book book = bookService.addNewBook(addBookDto);
-//
-//		return new ResponseEntity<>(book, HttpStatus.CREATED);
-//	}
 
     @PutMapping("/update/book")
-    public ResponseEntity<?> updateExistingBook(@PathVariable Long id, @RequestBody UpdateBookDto updateBookDto) {
-        Book book = bookService.updateNewBook(updateBookDto);
-
-        return new ResponseEntity<>(book, HttpStatus.OK);
+    public ResponseEntity<?> updateBook(@RequestBody UpdateBookDto updateBookDto) {
+        Book book = bookService.updateBook(updateBookDto);
+        BookResponseDto bookResponseDto = book.toBookResponseDto();
+        return new ResponseEntity<>(bookResponseDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/book/{id}")
-    public ResponseEntity<Void> deleteExistingBook(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteExistingBook(id);
         return ResponseEntity.noContent().build();
     }
@@ -77,7 +108,7 @@ public class AdminController {
     }
 
     @PutMapping("/update/author")
-    public ResponseEntity<?> updateAuthro(@RequestBody UpdateAuthorDto updateAuthorDto) {
+    public ResponseEntity<?> updateAuthor(@RequestBody UpdateAuthorDto updateAuthorDto) {
         Author author = authorService.updateAuthor(updateAuthorDto);
         if (author != null) {
             AuthorResponseDto responseDto = author.toResponseDto();
@@ -101,24 +132,3 @@ public class AdminController {
     }
 
 }
-//@PostMapping("/add/book")
-//public ResponseEntity<?> addNewBook(@RequestBody AddBookDto addBookDto) {
-//    Book book = packageService.addNewBook(addBookDto);
-//    return new ResponseEntity<>(book, HttpStatus.CREATED);
-//}
-//
-//@PutMapping("/edit/package")
-//public ResponseEntity<?> updatePackage(@RequestBody CreditPackage editBody){
-//
-//    CreditPackage creditPackage = creditPackageService.updatePackage(editBody);
-//
-//    return new ResponseEntity<>(creditPackage, HttpStatus.OK);
-//}
-//
-//@DeleteMapping("/delete/package")
-//public ResponseEntity<?> deletePackage(@RequestParam Long id){
-//
-//    String deletePackage = creditPackageService.deletePackageById(id);
-//
-//    return new ResponseEntity<>(deletePackage, HttpStatus.OK);
-//}

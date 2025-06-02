@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import com.meme.onlinebookportal.dto.BookResponseDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -61,6 +62,20 @@ public class Book {
 		if (createdAt == null) {
 			createdAt = LocalDateTime.now();
 		}
+	}
+
+	public BookResponseDto toBookResponseDto(){
+		BookResponseDto dto = new BookResponseDto();
+
+		dto.setId(this.id);
+		dto.setBookName(this.bookName);
+		dto.setBookIsbnNumber(this.bookIsbnNumber);
+		dto.setBookPrice(this.bookPrice);
+		dto.setBookRating(this.bookRating);
+		dto.setBookQuantity(this.bookQuantity);
+		dto.setBookCategory(this.bookCategory);
+
+		return dto;
 	}
 
 }
