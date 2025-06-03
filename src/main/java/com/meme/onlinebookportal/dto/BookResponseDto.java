@@ -17,4 +17,5 @@ public class BookResponseDto {
 	private BigDecimal bookRating;
 	private Integer bookQuantity;
 	private String bookCategory;
+	private String bookImageUrl;
 }

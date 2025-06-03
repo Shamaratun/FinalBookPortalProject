@@ -1,6 +1,7 @@
 package com.meme.onlinebookportal.repository;
 
 import com.meme.onlinebookportal.model.Book;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -12,5 +13,14 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Book findByBookIsbnNumber(Integer bookIsbnNumber);
 
     @Query("SELECT DISTINCT b FROM Book b LEFT JOIN FETCH b.bookAuthors")
-    List<Book> findAllWithAuthors();
+    List<Book> findAllBooksWithAuthors();
+
+//    @EntityGraph(attributePaths = "bookAuthors")
+//    @Query("SELECT b FROM Book b")
+//    List<Book> findAllWithAuthors();
+
+    // Debug query - see if this works
+    @Query("SELECT b FROM Book b")
+    List<Book> findAllBooks();
+
 }

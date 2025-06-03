@@ -10,6 +10,8 @@ import com.meme.onlinebookportal.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -39,4 +41,7 @@ public class UserService {
 
 	}
 
+	public List<User> getAllUsers() {
+		return userRepository.findAll();
+	}
 }

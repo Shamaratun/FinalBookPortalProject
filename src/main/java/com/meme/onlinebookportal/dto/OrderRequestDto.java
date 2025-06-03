@@ -8,6 +8,7 @@ import java.util.Set;
 @Data
 public class OrderRequestDto {
     private Long userId;
+//    private int quantity;
     private Set<Long> bookIds;
     private BigDecimal orderPrice; // Optional if you want to calculate on backend
 }

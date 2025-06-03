@@ -6,6 +6,7 @@ import com.meme.onlinebookportal.model.Book;
 import com.meme.onlinebookportal.service.AuthorService;
 import com.meme.onlinebookportal.service.BookService;
 import com.meme.onlinebookportal.service.OrderService;
+import com.meme.onlinebookportal.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +21,13 @@ public class AdminController {
     private final BookService bookService;
     private final AuthorService authorService;
     private final OrderService orderService;
+    private final UserService userService;
 
-    public AdminController(BookService bookService, AuthorService authorService, OrderService orderService) {
+    public AdminController(BookService bookService, AuthorService authorService, OrderService orderService, UserService userService) {
         this.bookService = bookService;
         this.authorService = authorService;
         this.orderService = orderService;
+        this.userService = userService;
     }
 
     @GetMapping("/{id}")
@@ -35,6 +38,11 @@ public class AdminController {
 
     @GetMapping("/books/withAuthor")
     public ResponseEntity<?> getBooksWithAuthorName() {
+
+        System.out.println("Debug started");
+        authorService.debugBookAuthors();
+        System.out.println("Debug ended");
+
         List<Book> books = authorService.getAllBooks();
 
         List<BookWithAuthorsDto> bookWithAuthorsDtoList = new ArrayList<>();
@@ -59,6 +67,7 @@ public class AdminController {
                     book.getBookRating(),
                     book.getBookQuantity(),
                     book.getBookCategory(),
+                    book.getBookImageUrl(),
                     authorNames
             );
 
@@ -129,6 +138,11 @@ public class AdminController {
     @GetMapping("/get/all/order")
     public ResponseEntity<?> getAllOrders() {
         return ResponseEntity.ok(orderService.getAllOrders());
+    }
+
+    @GetMapping("/get/all/users")
+    public ResponseEntity<?> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
 }

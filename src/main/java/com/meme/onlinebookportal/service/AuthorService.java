@@ -6,10 +6,11 @@ import com.meme.onlinebookportal.model.Author;
 import com.meme.onlinebookportal.model.Book;
 import com.meme.onlinebookportal.repository.AuthorRepository;
 import com.meme.onlinebookportal.repository.BookRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class AuthorService {
@@ -54,7 +55,6 @@ public class AuthorService {
         return null;
     }
 
-    @Transactional
     public void deleteAuthor(Long id) {
         authorRepository.deleteById(id);
     }
@@ -63,8 +63,29 @@ public class AuthorService {
         return authorRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<Book> getAllBooks() {
-        return bookRepository.findAllWithAuthors();
+        List<Book> allWithAuthors = bookRepository.findAllBooksWithAuthors();
+        return allWithAuthors;
+    }
+
+    // Debug method
+    @Transactional(readOnly = true)
+    public void debugBookAuthors() {
+        List<Book> books = bookRepository.findAllBooks();
+        for (Book book : books) {
+            System.out.println("Book: " + book.getBookName());
+            try {
+                Set<Author> bookAuthors = book.getBookAuthors();
+                System.out.println("Authors size: " + bookAuthors.size());
+                // This will trigger lazy loading if needed
+                bookAuthors.forEach(author ->
+                        System.out.println("Author: " + author.getAuthorName())
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

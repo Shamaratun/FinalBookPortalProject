@@ -16,7 +16,7 @@ public class AddBookDto {
 	private BigDecimal bookRating;
 	private String bookCategory;
 	private Integer bookQuantity;
-	private String imageUrl;
+	private String bookImageUrl;
 	private Set<Long> bookAuthorIds;
 
 }

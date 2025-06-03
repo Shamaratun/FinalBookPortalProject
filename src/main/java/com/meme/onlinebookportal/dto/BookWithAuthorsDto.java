@@ -17,5 +17,6 @@ public class BookWithAuthorsDto {
     private BigDecimal bookRating;
     private Integer bookQuantity;
     private String bookCategory;
+    private String bookImageUrl;
     private String authorNames;
 }
